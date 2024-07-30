@@ -101,5 +101,31 @@ public class StringCalculatorTest {
     void string_with_custom_delimiter_anyLength() {
     	int value = sc1.add("//[***]\n1***2***3"); 
     	Assertions.assertEquals(value, 6);
+    	
+    	value = sc1.add("//[!!!!]\n2!!!!32!!!!6");
+    	Assertions.assertEquals(value, 40);
+    }
+    
+    // 11. String with multiple custom delimiters (of length 1)
+    @Test
+    void string_with_multiple_custom_delimiter() {
+    	int value = sc1.add("//[*][#]\n1*22*34#20#10");
+    	Assertions.assertEquals(value, 87);
+    	
+    	value = sc1.add("//[$][@]\n5$67$3@25@50");
+    	Assertions.assertEquals(value,150);
+    }
+    
+    // 12. String with multiple custom delimiters of any length
+    @Test
+    void string_with_multiple_custom_delimiters_anyLength() {
+    	int value = sc1.add("//[***][@@]\n1***2***4@@3@@50");
+    	Assertions.assertEquals(value, 60);
+    	
+    	value = sc1.add("//[###][@@]\n2###5###40@@3@@50");
+    	Assertions.assertEquals(value, 100);
+    	
+    	value = sc1.add("//[///][@@]\n2///3///4@@5");
+    	Assertions.assertEquals(value,14);
     }
 }

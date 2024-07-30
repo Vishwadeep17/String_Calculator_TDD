@@ -29,7 +29,7 @@ public class StringCalculator {
 
         for (String number : numberArray) {
             try {
-                int currValue = Integer.parseInt(number);
+                int currValue = Integer.parseInt(number.trim());
 
                 // If number is greater than 1000, then ignore it.
                 if (currValue > 1000) continue;
@@ -48,27 +48,48 @@ public class StringCalculator {
     // Method to check and set custom delimiter if present
     private String setCustomDelimiter(String numbers) {
         if (numbers.startsWith("//")) {
-            Matcher matcher = Pattern.compile("//\\[(.+?)\\]\n(.*)").matcher(numbers);
-            if (matcher.matches()) {
-                delimiter = Pattern.quote(matcher.group(1)); // Use the custom delimiter
-                numbers = matcher.group(2); // Update the numbers string to exclude the custom delimiter part
+            // Matcher to capture multiple delimiters of varying lengths
+            Matcher matcher = Pattern.compile("//(\\[.*?\\])\n(.*)").matcher(numbers);
+            if (matcher.find()) {
+                String delimiterPart = matcher.group(1);
+                
+                // Updating new numbers string with removing front delimiters
+                numbers = matcher.group(2);
+
+                // Removing outer [ and ],  and splitting by ][
+                delimiterPart = delimiterPart.substring(1, delimiterPart.length() - 1);
+                String[] delimiters = delimiterPart.split("\\]\\[");
+
+                // Appending all delimiters
+                StringBuilder delimiterPattern = new StringBuilder();
+                for (String delim : delimiters) {
+                    if (delimiterPattern.length() > 0) {
+                        delimiterPattern.append("|");
+                    }
+                    delimiterPattern.append(Pattern.quote(delim));
+                }
+                delimiter = delimiterPattern.toString();
+
             } else {
-                matcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
-                if (matcher.matches()) {
-                    delimiter = Pattern.quote(matcher.group(1)); // Use the custom single-character delimiter
-                    numbers = matcher.group(2); // Update the numbers string to exclude the custom delimiter part
+                matcher = Pattern.compile("//(.*?)\n(.*)").matcher(numbers);
+                if (matcher.find()) {
+                    delimiter = Pattern.quote(matcher.group(1)); // Use the custom delimiter
+                    
+                    // Updating new numbers string with removing front delimiters
+                    numbers = matcher.group(2);
                 }
             }
         }
         return numbers;
     }
 
+
     // Method to check for negative numbers and throw an exception if any are found
     private void checkForNegativeNumbers(String[] numberArray) {
         List<String> negativeNumbers = new ArrayList<>();
         for (String number : numberArray) {
             try {
-                int num = Integer.parseInt(number);
+                int num = Integer.parseInt(number.trim());
                 if (num < 0) {
                     negativeNumbers.add(number);
                 }
