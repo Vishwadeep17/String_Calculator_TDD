@@ -29,8 +29,11 @@ public class StringCalculator {
 
         for (String number : numberArray) {
             try {
-                // Parsing and adding
-                sum += Integer.parseInt(number);
+                int currValue = Integer.parseInt(number);
+
+                // If number is greater than 1000, then ignore it.
+                if (currValue > 1000) continue;
+                sum += currValue;
             } catch (NumberFormatException e) {
                 System.out.println("Failed to parse number: " + number);
             }
@@ -45,11 +48,16 @@ public class StringCalculator {
     // Method to check and set custom delimiter if present
     private String setCustomDelimiter(String numbers) {
         if (numbers.startsWith("//")) {
-            Matcher matcher = Pattern.compile("//(.*?)\n(.*)").matcher(numbers);
+            Matcher matcher = Pattern.compile("//\\[(.+?)\\]\n(.*)").matcher(numbers);
             if (matcher.matches()) {
                 delimiter = Pattern.quote(matcher.group(1)); // Use the custom delimiter
-                // Update the numbers string to exclude the custom delimiter part
-                numbers = matcher.group(2);
+                numbers = matcher.group(2); // Update the numbers string to exclude the custom delimiter part
+            } else {
+                matcher = Pattern.compile("//(.)\n(.*)").matcher(numbers);
+                if (matcher.matches()) {
+                    delimiter = Pattern.quote(matcher.group(1)); // Use the custom single-character delimiter
+                    numbers = matcher.group(2); // Update the numbers string to exclude the custom delimiter part
+                }
             }
         }
         return numbers;
@@ -65,7 +73,7 @@ public class StringCalculator {
                     negativeNumbers.add(number);
                 }
             } catch (NumberFormatException e) {
-            	System.out.println("Failed to parse number: " + number);
+                System.out.println("Failed to parse number: " + number);
             }
         }
         if (!negativeNumbers.isEmpty()) {

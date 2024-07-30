@@ -84,4 +84,22 @@ public class StringCalculatorTest {
         );
         Assertions.assertEquals("Negative numbers not allowed: -2, -4, -5", thrown.getMessage());
     }
+    
+    // 9. If string has some numbers with value greater than 1000, then ignore it.
+    @Test
+    void string_with_greaterThan1000() {
+    	int value = sc1.add("100,20,56\n1001,700\n3020,12"); 
+    	Assertions.assertEquals(value, 888);
+    	
+    	//With delimiter
+    	value = sc1.add("//$\n12$23$1001$15$1003");
+    	Assertions.assertEquals(value, 50);
+    }
+    
+    // 10. String with custom delimiter of any length
+    @Test
+    void string_with_custom_delimiter_anyLength() {
+    	int value = sc1.add("//[***]\n1***2***3"); 
+    	Assertions.assertEquals(value, 6);
+    }
 }
