@@ -33,8 +33,15 @@ public class StringCalculator {
 
                 // If number is greater than 1000, then ignore it.
                 if (currValue > 1000) continue;
-                sum += currValue;
+                
+                //If number is between 500 and 1000, then subtract it.
+                if(currValue >= 500 && currValue <= 1000) {
+                	sum -= currValue;
+                } else {
+                	sum += currValue;
+                }
             } catch (NumberFormatException e) {
+            	System.out.println(e);
                 System.out.println("Failed to parse number: " + number);
             }
         }
